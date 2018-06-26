@@ -114,7 +114,8 @@ public abstract class GraphInstanceTest {
      * vertices(): 2, 5
      * sources(): 1.1 , 4
      * targets(): 1.1, 4
-     */  
+     */
+    @Test
     public void testAddToEmptyGraph(){
         Graph<String> graph = emptyInstance();
         
@@ -132,7 +133,8 @@ public abstract class GraphInstanceTest {
      * vertices(): 1, 2, 4
      * sources(): 1.1 , 2, 4
      * targets(): 1.1, 2, 4
-     */ 
+     */
+    @Test
     public void testDuplicated_Add_Remove(){
 
         Graph<String> graph = emptyInstance();
@@ -163,7 +165,8 @@ public abstract class GraphInstanceTest {
      * vertices(): 3, 4
      * sources(): 1.2
      * targets(): 1.2
-     */ 
+     */
+    @Test
     public void testAddEdgeThenAddVertexIncidentToIt(){
         Graph<String> graph = emptyInstance();
         
@@ -182,14 +185,15 @@ public abstract class GraphInstanceTest {
      * vertices(): 3
      * sources(): 1.2, 4
      * targets(): 1.2, 4
-     */ 
+     */
+    @Test
     public void testAddEdgeSourceExistsTragetDoesNot(){
         Graph<String> graph = emptyInstance();
         
         graph.add("a");
         
         assertEquals(graph.set("a", "b", 1),0);
-        assertEquals(graph.vertices().size(),1);
+        assertEquals(graph.vertices().size(),2);
         assertTrue(graph.vertices().contains("a") &&
                 graph.vertices().contains("b"));
         assertTrue(graph.sources("a").isEmpty());
@@ -207,14 +211,15 @@ public abstract class GraphInstanceTest {
      * vertices(): 3, 4
      * sources(): 1.2, 4
      * targets(): 1.2, 4
-     */ 
+     */
+    @Test
     public void testAddEdgeSourceNotExistTargetDoes(){
         Graph<String> graph = emptyInstance();
         
         graph.add("b");
         
         assertEquals(graph.set("a", "b", 1),0);
-        assertEquals(graph.vertices().size(),1);
+        assertEquals(graph.vertices().size(),2);
         assertTrue(graph.vertices().contains("a") &&
                 graph.vertices().contains("b"));
         assertTrue(graph.sources("a").isEmpty());
@@ -232,7 +237,8 @@ public abstract class GraphInstanceTest {
      * vertices(): 3, 4
      * sources(): 1.2, 4
      * targets(): 1.1, 4
-     */ 
+     */
+    @Test
     public void testAddEdgeBetweenExisitingVertices(){
         Graph<String> graph = emptyInstance();
         
@@ -240,7 +246,7 @@ public abstract class GraphInstanceTest {
         graph.add("b");
         
         assertEquals(graph.set("a", "b", 1),0);
-        assertEquals(graph.vertices().size(),1);
+        assertEquals(graph.vertices().size(),2);
         assertTrue(graph.vertices().contains("a") &&
                 graph.vertices().contains("b"));
         assertTrue(graph.sources("a").isEmpty());
@@ -251,11 +257,12 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.sources("b").get("a"),new Integer(1));
     }
     
+    @Test
     public void testAddEdgeBetweenNonExistingVertices(){
         Graph<String> graph = emptyInstance();
         
         assertEquals(graph.set("a", "b", 1),0);
-        assertEquals(graph.vertices().size(),1);
+        assertEquals(graph.vertices().size(),2);
         assertTrue(graph.vertices().contains("a") &&
                 graph.vertices().contains("b"));
         assertTrue(graph.sources("a").isEmpty());
@@ -266,13 +273,14 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.sources("b").get("a"),new Integer(1));
     }
     
+    @Test
     public void testChangeEdgeWeight(){
         Graph<String> graph = emptyInstance();
         
         graph.set("a", "b", 2);
         
-        assertEquals(graph.set("a", "b", 1),0);
-        assertEquals(graph.vertices().size(),1);
+        assertEquals(graph.set("a", "b", 1),2);
+        assertEquals(graph.vertices().size(),2);
         assertTrue(graph.vertices().contains("a") &&
                 graph.vertices().contains("b"));
         assertTrue(graph.sources("a").isEmpty());
@@ -283,6 +291,7 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.sources("b").get("a"),new Integer(1));  
     }
     
+    @Test
     public void testRemoveEdgeBetweenNonExistingVertices(){
         Graph<String> graph = emptyInstance();
         
@@ -295,6 +304,7 @@ public abstract class GraphInstanceTest {
         
     }
     
+    @Test
     public void testRemoveNoExistingEdgeBetweenExisitingVertices(){
         Graph<String> graph = emptyInstance();
         
@@ -311,6 +321,8 @@ public abstract class GraphInstanceTest {
                 graph.targets("b").isEmpty());
         
     }
+    
+    @Test
     public void testRemoveEdgeDistinctVertices(){
         Graph<String> graph = emptyInstance();
         
@@ -326,6 +338,7 @@ public abstract class GraphInstanceTest {
                 graph.targets("b").isEmpty());
     }
     
+    @Test
     public void testAddChangeRemoveReflexiveEdge(){
         Graph<String> graph = emptyInstance();
         
@@ -355,6 +368,7 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.targets("a").size(),0);    
     }
 
+    @Test
     public void testRemoveVertexWithMultipleInAndOutEdges(){
         Graph<String> graph = emptyInstance();
         
@@ -381,6 +395,7 @@ public abstract class GraphInstanceTest {
                 graph.targets("c").isEmpty());  
     }
     
+    @Test
     public void testRemoveVertexWithSingleInAndOutEdges(){
         Graph<String> graph = emptyInstance();
         
@@ -391,10 +406,11 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.vertices().size(), 2);
         assertTrue(graph.vertices().contains("b") &&
                 graph.vertices().contains("c"));
-        assertTrue(graph.sources("c").isEmpty());
-        assertFalse(graph.targets("b").isEmpty());
+        assertTrue(graph.sources("b").isEmpty());
+        assertTrue(graph.targets("c").isEmpty());
     }    
     
+    @Test
     public void testNonMutatingObservers(){
         Graph<String> graph = emptyInstance();
         
@@ -434,152 +450,5 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.targets("a").get("b"),new Integer(1));
         assertEquals(graph.sources("b").size(),1);
         assertEquals(graph.sources("b").get("a"),new Integer(1));
-    }
-    //covers:
-    //add(): 1.1, 2
-    //set():
-    //remove(): 1.1, 1.4, 1.7, 2
-    //vertices(): 1, 2, 4
-    //sources(): 1
-    //targets(): 1
-    @Test
-    public void testDuplicatedAddAndRemove(){
-        Graph<String> graph = emptyInstance();
-        
-        assertTrue(graph.add("a"));
-        assertFalse(graph.add("a"));
-        assertTrue(graph.vertices().size() == 1 && graph.vertices().contains("a"));
-        assertTrue(graph.sources("a").isEmpty() && graph.targets("a").isEmpty());
-        assertTrue(graph.remove("a"));
-        assertFalse(graph.remove("a"));
-        assertTrue(graph.vertices().isEmpty());
-    }
-    
-    //covers:
-    //add():
-    //set(): 3.2.2, 3.2.1, 3.4, 1.1, 1.2, 1.4, 2.1, 2.2, 2.4
-    //remove():
-    //vertices(): 3
-    //sources(): 1, 2
-    //targets(): 1, 2
-    @Test
-    public void testAddChangeRemoveEdgeInSymmetricGraph(){
-        Graph<String> graph = emptyInstance();
-        
-        //case when removing edge between non-existing vertices 
-        graph.set("a", "b", 0);
-        assertTrue(graph.vertices().isEmpty());
-        
-        //add edge a-->b
-        assertEquals(graph.set("a", "b", 1), 0);
-        assertTrue(graph.vertices().size() == 2);
-        assertTrue(graph.vertices().contains("a") 
-                && graph.vertices().contains("b"));
-        Map<String,Integer> sources = graph.sources("b");
-        assertEquals(sources.size(), 1);
-        assertEquals(sources.get("a"), new Integer(1));
-        Map<String,Integer> targets = graph.targets("a");
-        assertEquals(targets.size(), 1);
-        assertEquals(targets.get("b"), new Integer(1));
-        
-        //ensure reverse edge not added
-        assertEquals(graph.set("b", "a", 0),0);
-        
-        //add reverse edge b-->a
-        graph.set("b", "a", 1);
-        
-        //change weight of edge a-->b
-        assertEquals(graph.set("a", "b", 2), 1);
-        sources = graph.sources("b");
-        assertEquals(sources.size(), 1);
-        assertEquals(sources.get("a"), new Integer(2));
-        targets = graph.targets("a");
-        assertEquals(targets.size(), 1);
-        assertEquals(targets.get("b"), new Integer(2));
-        
-        //ensure weight of edge b-->a not changed
-        assertEquals(graph.set("b", "a", 1),1);
-        
-        //remove edge a-->b
-        assertEquals(graph.set("a", "b", 0), 2);
-        sources = graph.sources("b");
-        assertTrue(sources.isEmpty());
-        targets = graph.targets("a");
-        assertTrue(targets.isEmpty());
-        
-        //ensure b --> a not changed
-        assertEquals(graph.set("b", "a", 1),1);
-    }
-    
-    //covers:
-    //add():
-    @Test
-    public void testReflexiveGraph(){
-        Graph<String> graph = emptyInstance();
-        Set<String> expectedVertexSet = new HashSet<>();
-        expectedVertexSet.add("a");
-        
-        graph.set("a", "a", 1);
-        assertFalse(graph.add("a"));
-        assertEquals(graph.vertices(), expectedVertexSet);
-        Map<String,Integer> sources = graph.sources("a");
-        assertEquals(sources.size(), 1);
-        assertEquals(sources.get("a"), new Integer(1));
-        Map<String,Integer> targets = graph.targets("a");
-        assertEquals(targets.size(), 1);
-        assertEquals(targets.get("a"), new Integer(1));
-        
-        graph.set("a", "a", 2);
-        sources = graph.sources("a");
-        assertEquals(sources.size(), 1);
-        assertEquals(sources.get("a"), new Integer(2));
-        targets = graph.targets("a");
-        assertEquals(targets.size(), 1);
-        assertEquals(targets.get("a"), new Integer(2));
-        
-        graph.set("a", "a", 0);
-        sources = graph.sources("a");
-        assertTrue(sources.isEmpty());
-        targets = graph.targets("a");
-        assertTrue(targets.isEmpty());
-    }
-    
-    @Test
-    public void testRemovingAttachedVertex(){
-        Graph<String> graph = emptyInstance();
-        
-        //test multiple in and out edges
-        graph.set("a", "b", 1);
-        graph.set("b", "a", 1);
-        graph.set("a", "c", 1);
-        graph.set("c", "a", 1);
-        
-        Map<String,Integer> sources = graph.sources("a");
-        Map<String,Integer> targets = graph.targets("a");
-        Map<String,Integer> expectedMap = new HashMap<>();
-        expectedMap.put("b", 1);
-        expectedMap.put("c", 1);
-        
-        assertEquals(sources,expectedMap);
-        assertEquals(targets,expectedMap);
-        
-        graph.remove("a");
-        assertTrue(graph.sources("b").isEmpty());
-        assertTrue(graph.targets("b").isEmpty());
-        assertTrue(graph.sources("c").isEmpty());
-        assertTrue(graph.targets("c").isEmpty());
-        
-        //test single in and out edges
-        graph.set("b", "c", 1);
-        graph.set("c", "b", 1);
-        expectedMap.remove("c");
-        
-        assertEquals(graph.sources("c"),expectedMap);
-        assertEquals(graph.targets("c"), expectedMap);
-        
-        graph.remove("b");
-        assertTrue(graph.sources("c").isEmpty());
-        assertTrue(graph.targets("c").isEmpty());   
-    }
-    
+    } 
 }
