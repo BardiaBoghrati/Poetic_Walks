@@ -5,12 +5,8 @@ package graph;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+
 
 import org.junit.Test;
 
@@ -339,6 +335,32 @@ public abstract class GraphInstanceTest {
     }
     
     @Test
+    public void testRemoveEdgeOnlyTailVertexExists(){
+        Graph<String> graph = emptyInstance();
+        
+        graph.add("a");
+        
+        assertEquals(graph.set("a", "b",0), 0);
+        assertEquals(graph.vertices().size(), 1);
+        assertTrue(graph.vertices().contains("a"));
+        assertTrue(graph.sources("a").isEmpty());
+        assertTrue(graph.targets("a").isEmpty());
+    }
+    
+    @Test
+    public void testRemoveEdgeOnlyHeadVertexExists(){
+        Graph<String> graph = emptyInstance();
+        
+        graph.add("a");
+        
+        assertEquals(graph.set("b", "a",0), 0);
+        assertEquals(graph.vertices().size(), 1);
+        assertTrue(graph.vertices().contains("a"));
+        assertTrue(graph.sources("a").isEmpty());
+        assertTrue(graph.targets("a").isEmpty());
+    }
+    
+    @Test
     public void testAddChangeRemoveReflexiveEdge(){
         Graph<String> graph = emptyInstance();
         
@@ -367,7 +389,7 @@ public abstract class GraphInstanceTest {
         assertEquals(graph.sources("a").size(),0);
         assertEquals(graph.targets("a").size(),0);    
     }
-
+    
     @Test
     public void testRemoveVertexWithMultipleInAndOutEdges(){
         Graph<String> graph = emptyInstance();
@@ -408,7 +430,26 @@ public abstract class GraphInstanceTest {
                 graph.vertices().contains("c"));
         assertTrue(graph.sources("b").isEmpty());
         assertTrue(graph.targets("c").isEmpty());
-    }    
+    }
+    
+    @Test
+    public void testRemoveIsolatedVertex(){
+        Graph<String> graph = emptyInstance();
+        
+        graph.add("a");
+        graph.set("b", "c", 1);
+        
+        assertTrue(graph.remove("a"));
+        assertEquals(graph.vertices().size(), 2);
+        assertTrue(graph.vertices().contains("b") &&
+                graph.vertices().contains("c"));
+        assertTrue(graph.sources("b").isEmpty());
+        assertTrue(graph.targets("c").isEmpty());
+        assertEquals(graph.targets("b").size(), 1);
+        assertEquals(graph.targets("b").get("c"), new Integer(1));
+        assertEquals(graph.sources("c").size(), 1);
+        assertEquals(graph.sources("c").get("b"), new Integer(1));
+    }
     
     @Test
     public void testNonMutatingObservers(){

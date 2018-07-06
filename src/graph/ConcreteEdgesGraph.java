@@ -152,9 +152,6 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
         return ("(" + vertices.toString() + ", " +
                 edges.toString() + ")").replace('[', '{').replace(']', '}');
     }
-
-    
-    
 }
 
 /**
