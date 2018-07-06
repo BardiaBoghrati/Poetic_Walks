@@ -21,7 +21,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
      * Provide a ConcreteEdgesGraph for tests in GraphInstanceTest.
      */
     @Override public Graph<String> emptyInstance() {
-        return new ConcreteEdgesGraph();
+        return new ConcreteEdgesGraph<String>();
     }
     
     /*
@@ -104,7 +104,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testDistinctVerticesWeightOne(){
-        Edge e = new Edge("a","b",1);
+        Edge<String> e = new Edge<>("a","b",1);
         
         assertEquals(e.head(),"b");
         assertEquals(e.tail(),"a");
@@ -114,7 +114,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testSameVerticesWeightGreaterThanOne(){
-        Edge e = new Edge("a","a",10);
+        Edge<String> e = new Edge<>("a","a",10);
         
         assertEquals(e.head(),"a");
         assertEquals(e.tail(),"a"); 

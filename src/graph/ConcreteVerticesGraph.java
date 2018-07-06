@@ -16,9 +16,9 @@ import java.util.Set;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
     
-    private final List<Vertex> vertices = new ArrayList<>();
+    private final List<Vertex<L>> vertices = new ArrayList<>();
     
     // Abstraction function:
     //   Represents a graph with vertex set determined by set of labels of elements found in vertices
@@ -43,9 +43,9 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     //asserts that every element in vertices has a label distinct from other labels
     private void checkDistinctLabels(){
-        Set<String> labelSet = new HashSet<>();
+        Set<L> labelSet = new HashSet<>();
         
-        for(Vertex vertex : vertices){
+        for(Vertex<L> vertex : vertices){
             assert !labelSet.contains(vertex.label());
             labelSet.add(vertex.label());
         }
@@ -53,55 +53,55 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     // asserts that every element in vertices has only edges to elements in vertices
     private void checkEdgeInvariant(){
-        for(Vertex vertex : vertices){
-            for(Vertex target : vertex.targets().keySet()){
+        for(Vertex<L> vertex : vertices){
+            for(Vertex<L> target : vertex.targets().keySet()){
                 assert vertices.contains(target);
             }
         }
     }
     
-    @Override public boolean add(String vertex) {
+    @Override public boolean add(L vertex) {
         if(indexOf(vertex) >= 0){
             return false;
         }
         
-        vertices.add(new Vertex(vertex));
+        vertices.add(new Vertex<L>(vertex));
         checkRep();
         return true;
     }
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         final int indexOfSource = indexOf(source);
         
         if(weight > 0){
             if(indexOfSource >= 0){
-                Vertex src = vertices.get(indexOfSource);
+                Vertex<L> src = vertices.get(indexOfSource);
                 final int indexOfTarget = indexOf(target);
                 
                 if(indexOfTarget >= 0){
-                    Vertex trg = vertices.get(indexOfTarget);
+                    Vertex<L> trg = vertices.get(indexOfTarget);
                     int prevWeight = src.setTarget(trg, weight);
                     checkRep();
                     return prevWeight;
                 }else{
-                    Vertex trg = new Vertex(target);
+                    Vertex<L> trg = new Vertex<L>(target);
                     vertices.add(trg);
                     int prevWeight = src.setTarget(trg, weight);
                     checkRep();
                     return prevWeight;
                 }
             }else{
-                Vertex src = new Vertex(source);
+                Vertex<L> src = new Vertex<L>(source);
                 vertices.add(src);
                 final int indexOfTarget = indexOf(target);
                 
                 if(indexOfTarget >= 0){
-                    Vertex trg = vertices.get(indexOfTarget);
+                    Vertex<L> trg = vertices.get(indexOfTarget);
                     int prevWeight = src.setTarget(trg, weight);
                     checkRep();
                     return prevWeight;
                 }else{
-                    Vertex trg = new Vertex(target);
+                    Vertex<L> trg = new Vertex<L>(target);
                     vertices.add(trg);
                     int prevWeight = src.setTarget(trg, weight);
                     checkRep();
@@ -112,8 +112,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
             final int indexOfTarget = indexOf(target);
             
             if(indexOfSource >= 0 && indexOfTarget >= 0){
-                Vertex src = vertices.get(indexOfSource);
-                Vertex trg = vertices.get(indexOfTarget);
+                Vertex<L> src = vertices.get(indexOfSource);
+                Vertex<L> trg = vertices.get(indexOfTarget);
                 
                 int prevWeight = src.setTarget(trg, weight);
                 checkRep();
@@ -126,7 +126,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
 
     }
     
-    @Override public boolean remove(String vertex) {
+    @Override public boolean remove(L vertex) {
         final int indexOfVertex = indexOf(vertex);
         
         if(indexOfVertex < 0){
@@ -134,13 +134,13 @@ public class ConcreteVerticesGraph implements Graph<String> {
             return false;
         }
         
-        Vertex v = vertices.get(indexOfVertex);
+        Vertex<L> v = vertices.get(indexOfVertex);
         
-        for(Vertex target : v.targets().keySet()){
+        for(Vertex<L> target : v.targets().keySet()){
             v.setTarget(target, 0);
         }
         
-        for(Vertex source : v.sources().keySet()){
+        for(Vertex<L> source : v.sources().keySet()){
             source.setTarget(v, 0);
         }
         
@@ -150,10 +150,10 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return true;
     }
     
-    @Override public Set<String> vertices() {
-        final Set<String> labelSet = new HashSet<>();
+    @Override public Set<L> vertices() {
+        final Set<L> labelSet = new HashSet<>();
         
-        for(Vertex vertex : vertices){
+        for(Vertex<L> vertex : vertices){
             labelSet.add(vertex.label());
         }
         
@@ -161,14 +161,14 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return labelSet;
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        final Map<String, Integer> sourcesMap = new HashMap<>();
+    @Override public Map<L, Integer> sources(L target) {
+        final Map<L, Integer> sourcesMap = new HashMap<>();
         final int indexOfTarget = indexOf(target);
         
         if(indexOfTarget >= 0){
-            final Vertex trg = vertices.get(indexOfTarget);
+            final Vertex<L> trg = vertices.get(indexOfTarget);
             
-            for(Entry<Vertex, Integer> entry : trg.sources().entrySet()){
+            for(Entry<Vertex<L>, Integer> entry : trg.sources().entrySet()){
                 sourcesMap.put(entry.getKey().label(), entry.getValue());
             }
         }
@@ -179,14 +179,14 @@ public class ConcreteVerticesGraph implements Graph<String> {
         
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        final Map<String, Integer> targetsMap = new HashMap<>();
+    @Override public Map<L, Integer> targets(L source) {
+        final Map<L, Integer> targetsMap = new HashMap<>();
         final int indexOfSource = indexOf(source);
         
         if(indexOfSource >= 0){
-            final Vertex src = vertices.get(indexOfSource);
+            final Vertex<L> src = vertices.get(indexOfSource);
             
-            for(Entry<Vertex, Integer> entry : src.targets().entrySet()){
+            for(Entry<Vertex<L>, Integer> entry : src.targets().entrySet()){
                 targetsMap.put(entry.getKey().label(), entry.getValue());
             }
         }
@@ -198,13 +198,13 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     /**
      * Returns a string representation of this Graph. The representation is of form:
-     * "(V,E)" where V is a list of vertex labels of this graph appearing exactly once in unspecified order and enclosed by "{}",
+     * "(V,E)" where V is a list of vertex labels of this graph ,in their string form, appearing exactly once in unspecified order and enclosed by "{}",
      * and E is a list of all edges with same form and constraints. Each edge in E is of form "(tail, head, weight)".
      * 
      * example:
-     * suppose graph G is constructed as such:
+     * suppose graph G is constructed with labels a, b, and c as such:
      *  G = emptyGraph(); G.set(b,a,1); G.set(a,c,2); G.add(d);
-     * then a possible return string rep is:
+     * then a possible return string rep is (note the letters here denote string forms of the labels above):
      *  G.toString() = ({b, a, c, d}, {(a, c, 2), (b , c, 1)})
      *  
      *  @return a string representation of this graph
@@ -213,8 +213,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
     public String toString() {
         final Set<String> edgeSet = new HashSet<>();
         
-        for(Vertex vertex : vertices){
-            for(Entry<Vertex, Integer> entry : 
+        for(Vertex<L> vertex : vertices){
+            for(Entry<Vertex<L>, Integer> entry : 
                 vertex.targets().entrySet()){
                 
                 final String edgeTuple = String.format("(%s, %s, %s)", vertex.label(),
@@ -236,7 +236,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     //Effects: returns index i of an element in vertices with label equal to
     //  vertex, if there is any; else, returns -1.
-    private int indexOf(String vertex){
+    private int indexOf(L vertex){
         for(int i = 0; i < vertices.size(); i++){
             if(vertices.get(i).label().equals(vertex)){
                 return i;
@@ -256,11 +256,11 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Vertex {
+class Vertex<L> {
     
-    private final String label;
-    private final Map<Vertex, Integer> targets = new HashMap<>();
-    private final Map<Vertex, Integer> sources = new HashMap<>();
+    private final L label;
+    private final Map<Vertex<L>, Integer> targets = new HashMap<>();
+    private final Map<Vertex<L>, Integer> sources = new HashMap<>();
     
     // Abstraction function:
     //   represents a vertex with label = this.label and where
@@ -271,11 +271,11 @@ class Vertex {
     //   for any entry (v,z) in this.sources, (this,z) is in v.targets
     //   the values of the map entries are non-negative integers
     // Safety from rep exposure:
-    //   All fields are private. this.lable is an immutable string. this.targets and this.sources are mutable maps, but 
+    //   All fields are private. this.lable is immutable. this.targets and this.sources are mutable maps, but 
     //   these maps are never directly passed in and on every return of data of type map a defensive copy is made before the return.
     //   The only threat remaining is the key parameters of these maps are mutable and exposed to the client; but,
     //   although Vertices are mutable, they inherit the Object Equal() and hashCode() methods which remain unchanged with mutation, and 
-    //   hence their exposer to clients does not those not threaten the rep invariant of these maps. Also, rep invariant of this
+    //   hence their exposer to clients does not those not threaten the rep invariant of the collections that contain them. Also, rep invariant of this
     //   ensures that changes made to any vertex u through u.setTarget(this,w) is reflected in representation of this, and vice versa. Therefore,
     //   the adjacency relationship between this and any of the keys in its rep remains consistent, even when these keys are
     //   changed independently.
@@ -284,7 +284,7 @@ class Vertex {
      * Creates a labeled vertex with no edges attached to it
      * @param label the label assigned to this vertex
      */
-    public Vertex(String label){
+    public Vertex(L label){
         this.label = label;
     }
     
@@ -296,18 +296,18 @@ class Vertex {
     
     //check rep invariant constraints imposed on targets of this vertex
     private void checkTargetEntries(){
-        for(Entry<Vertex, Integer> e : targets.entrySet()){
+        for(Entry<Vertex<L>, Integer> e : targets.entrySet()){
             assert e.getValue() > 0;
-            Vertex target = e.getKey();
+            Vertex<L> target = e.getKey();
             assert target.sources.get(this).equals(e.getValue());
         } 
     }
     
     // check rep invariant constraints imposed on sources of this vertex
     private void checkSourceEntries(){
-        for(Entry<Vertex, Integer> e : sources.entrySet()){
+        for(Entry<Vertex<L>, Integer> e : sources.entrySet()){
             assert e.getValue() > 0;
-            Vertex source = e.getKey();
+            Vertex<L> source = e.getKey();
             assert source.targets.get(this).equals(e.getValue());
         } 
     }
@@ -328,7 +328,7 @@ class Vertex {
      * @param weight non-negative weight of the edge
      * @return previous weight of edge this --> v or 0 if there was no such edge
      */
-    public int setTarget(Vertex v, int weight){
+    public int setTarget(Vertex<L> v, int weight){
         final int prevWeight = targets.getOrDefault(v, 0);
         if(weight > 0){
             targets.put(v, weight);
@@ -347,8 +347,8 @@ class Vertex {
      * A Map with keys containing set of all Vertices that are tails of an edge to this with corresponding value
      * representing the weight of that edge.
      */
-    public Map<Vertex,Integer> sources(){
-         final Map<Vertex,Integer> sources = new HashMap<>(this.sources);
+    public Map<Vertex<L>,Integer> sources(){
+         final Map<Vertex<L>,Integer> sources = new HashMap<>(this.sources);
          checkRep();
          return sources;
     }
@@ -359,8 +359,8 @@ class Vertex {
      * A Map with keys containing set of all Vertices that are head of an edge from this with corresponding value
      * representing the weight of that edge.
      */
-    public Map<Vertex,Integer> targets(){
-        final Map<Vertex,Integer> targets = new HashMap<>(this.targets);
+    public Map<Vertex<L>,Integer> targets(){
+        final Map<Vertex<L>,Integer> targets = new HashMap<>(this.targets);
         checkRep();
         return targets;
     }
@@ -368,7 +368,7 @@ class Vertex {
     /**
      * @return the label associated with this vertex
      */
-    public String label(){
+    public L label(){
         return label;
     }
     
@@ -376,8 +376,10 @@ class Vertex {
      * The string representation of this Vertex is a 3 element tuple bracketed with "()". First element is the label of this Vertex. Second element is 
      * list of pairs (u,w) --in unspecified order-- where u is label of a vertex such this --> u with weight w, all enclosed with "[]". Third is a list of pairs (u,w) where u --> this with weight w.
      * <br>
+     * Note: label here means the string form of the label object as determined by its toString() method.
+     * <br>
      * Example:
-     * suppose 3 distinct vertices v,u,x with v.label() = "a", u.label() = "b", x.label() = "b" and consider what follows:<br>
+     * suppose 3 distinct vertices v,u,x with v.label().toString() = "a", u.label().toString() = "b", x.label().toString() = "b" and consider what follows:<br>
      * v.setTarget(u,1); v.setTarget(x,1);
      * This is an possible outcome of calling toString on this vertices
      * v.toString() = "(a, [(b,1), (b,1)], [])"
@@ -389,12 +391,12 @@ class Vertex {
      */
     @Override public String toString(){
         final List<String> targetList = new ArrayList<>();
-        for(Entry<Vertex, Integer> e : targets.entrySet()){
-            targetList.add(String.format("(%s, %s)", e.getKey().label, e.getValue()));
+        for(Entry<Vertex<L>, Integer> e : targets.entrySet()){
+            targetList.add(String.format("(%s, %s)", e.getKey().label(), e.getValue()));
         }
         
         final List<String> sourceList = new ArrayList<>();
-        for(Entry<Vertex, Integer> e : sources.entrySet()){
+        for(Entry<Vertex<L>, Integer> e : sources.entrySet()){
             sourceList.add(String.format("(%s, %s)", e.getKey().label, e.getValue()));
         }
         

@@ -16,10 +16,10 @@ import java.util.Set;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteEdgesGraph implements Graph<String> {
+public class ConcreteEdgesGraph<L> implements Graph<L> {
     
-    private final Set<String> vertices = new HashSet<>();
-    private final List<Edge> edges = new ArrayList<>();
+    private final Set<L> vertices = new HashSet<>();
+    private final List<Edge<L>> edges = new ArrayList<>();
     
     // Abstraction function:
     //   represents graph with vertex set equal to vertices and
@@ -43,17 +43,17 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
     
     private void assertEdgeVertexCompatibility(){
-        for(Edge e : edges){
+        for(Edge<L> e : edges){
             assert vertices.contains(e.tail()) && 
                 vertices.contains(e.head());
         }
     }
     
     private void assertNoDuplicateEdges(){
-        Map<String,Set<String>> targets = new HashMap<>();
+        Map<L,Set<L>> targets = new HashMap<>();
         
-        for(Edge e : edges){
-            Set<String> adjacentHeads = targets.getOrDefault(e.tail(), new HashSet<>());
+        for(Edge<L> e : edges){
+            Set<L> adjacentHeads = targets.getOrDefault(e.tail(), new HashSet<L>());
             
             assert !adjacentHeads.contains(e.head());
             adjacentHeads.add(e.head());
@@ -61,15 +61,15 @@ public class ConcreteEdgesGraph implements Graph<String> {
         }
     }
     
-    @Override public boolean add(String vertex) {
+    @Override public boolean add(L vertex) {
         final boolean containsVertex = vertices.add(vertex);
         checkRep();
         return containsVertex;
     }
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         int prevWeight = 0;
-        for(Edge e : edges){
+        for(Edge<L> e : edges){
             if(e.tail().equals(source) && 
                     e.head().equals(target)){
                 prevWeight = e.weigt();
@@ -79,7 +79,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
         }
         
         if(weight > 0){
-            edges.add(new Edge(source, target, weight));
+            edges.add(new Edge<L>(source, target, weight));
             vertices.add(source);
             vertices.add(target);
         }
@@ -88,11 +88,11 @@ public class ConcreteEdgesGraph implements Graph<String> {
         return prevWeight;
     }
     
-    @Override public boolean remove(String vertex) {
-        Iterator<Edge> listItr = edges.iterator();
+    @Override public boolean remove(L vertex) {
+        Iterator<Edge<L>> listItr = edges.iterator();
         
         while(listItr.hasNext()){
-            Edge e = listItr.next();
+            Edge<L> e = listItr.next();
             
             if(e.tail().equals(vertex) || 
                     e.head().equals(vertex)){
@@ -105,14 +105,14 @@ public class ConcreteEdgesGraph implements Graph<String> {
         return containsVertex;
     }
     
-    @Override public Set<String> vertices() {
-        return new HashSet<String>(vertices);
+    @Override public Set<L> vertices() {
+        return new HashSet<L>(vertices);
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        final Map<String, Integer> sources = new HashMap<>();
+    @Override public Map<L, Integer> sources(L target) {
+        final Map<L, Integer> sources = new HashMap<>();
         
-        for(Edge e : edges){
+        for(Edge<L> e : edges){
             if(e.head().equals(target)){
                 sources.put(e.tail(), e.weigt());
             }
@@ -122,10 +122,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
         return sources;
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        final Map<String, Integer> targets = new HashMap<>();
+    @Override public Map<L, Integer> targets(L source) {
+        final Map<L, Integer> targets = new HashMap<>();
         
-        for(Edge e : edges){
+        for(Edge<L> e : edges){
             if(e.tail().equals(source)){
                 targets.put(e.head(), e.weigt());
             }
@@ -137,13 +137,13 @@ public class ConcreteEdgesGraph implements Graph<String> {
     
     /**
      * Returns a string representation of this Graph. The representation is of form:
-     * "(V,E)" where V is a list of vertex labels of this graph appearing exactly once in unspecified order and enclosed by "{}",
+     * "(V,E)" where V is a list of vertex labels of this graph ,in their string form, appearing exactly once in unspecified order and enclosed by "{}",
      * and E is a list of all edges with same form and constraints. Each edge in E is of form "(tail, head, weight)".
      * 
      * example:
-     * suppose graph G is constructed as such:
+     * suppose graph G is constructed with labels a, b, and c as such:
      *  G = emptyGraph(); G.set(b,a,1); G.set(a,c,2); G.add(d);
-     * then a possible return string rep is:
+     * then a possible return string rep is (note the letters here denote string forms of the labels above):
      *  G.toString() = ({b, a, c, d}, {(a, c, 2), (b , c, 1)})
      *  
      *  @return a string representation of this graph
@@ -167,10 +167,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Edge {
+class Edge<L> {
     
-    private final  String tail;
-    private final String head;
+    private final  L tail;
+    private final L head;
     private final int weight;
     
     // Abstraction function:
@@ -186,7 +186,7 @@ class Edge {
      * @param head label representing head of this edge
      * @param weight weight of this edge; must be a positive value (>0)  
      */
-    public Edge(String tail, String head, int weight){
+    public Edge(L tail, L head, int weight){
         this.tail = tail;
         this.head = head;
         this.weight = weight;
@@ -202,7 +202,7 @@ class Edge {
      * 
      * @return a label representing the head of this edge
      */
-    public String head(){
+    public L head(){
         return head;
     };
     
@@ -210,7 +210,7 @@ class Edge {
      * 
      * @return a label representing the tail of this edge
      */
-    public String tail(){
+    public L tail(){
         return tail;
     }
     /**
@@ -222,7 +222,8 @@ class Edge {
     }
     
     /**
-     * Returns a string representation of this edge in the form: "(tail, head, weight)"
+     * Returns a string representation of this edge in the form: "(tail, head, weight)". Each of the elements 
+     * of this tuple represent the string form of the respective labeled component of this edge as given by toString().
      * @return a string representation of this edge
      */
     @Override public String toString() {

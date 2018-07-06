@@ -21,7 +21,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
      * Provide a ConcreteVerticesGraph for tests in GraphInstanceTest.
      */
     @Override public Graph<String> emptyInstance() {
-        return new ConcreteVerticesGraph();
+        return new ConcreteVerticesGraph<String>();
     }
     
     /*
@@ -136,7 +136,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     //toString(): 1.2, 2.2, 3.2, 4.2
     @Test
     public void testChangeReflexiveEdge(){
-        Vertex v = new Vertex("a");
+        Vertex<String> v = new Vertex<String>("a");
         
         v.setTarget(v, 1);
         assertEquals(1, v.setTarget(v, 2));
@@ -156,8 +156,8 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     //toString(): 1.1, 1.2, 2.1, 2.2, 3.2, 4.2
     @Test
     public void testChangeProperEdge(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
         
         assertEquals(0, v.setTarget(u, 1));
         assertEquals(1,v.setTarget(u, 2));
@@ -177,9 +177,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testTargetsWithSameLabelDifferentWeight(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         v.setTarget(u, 1);
         v.setTarget(x, 2);
@@ -195,9 +195,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testAddTargetsWithSameLabelSameWeight(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         v.setTarget(u, 1);
         v.setTarget(x, 1);
@@ -211,9 +211,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testAddSourcesWithSameLabelDifferentWeight(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         u.setTarget(v, 1);
         x.setTarget(v, 2);
@@ -228,9 +228,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testAddSourcesWithSameLabelSameWeight(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         u.setTarget(v, 1);
         x.setTarget(v, 1);
@@ -244,7 +244,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testAddReflexiveEdge(){
-        Vertex v = new Vertex("a");
+        Vertex<String> v = new Vertex<String>("a");
         
         assertEquals(0, v.setTarget(v, 1));
         
@@ -257,7 +257,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveReflexiveEdge(){
-        Vertex v = new Vertex("a");
+        Vertex<String> v = new Vertex<String>("a");
         
         v.setTarget(v, 1);
         assertEquals(1, v.setTarget(v, 0));
@@ -269,8 +269,8 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveProperEdge(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
         
         v.setTarget(u, 1);
         assertEquals(1, v.setTarget(u, 0));
@@ -286,9 +286,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveOneOfTheTargetsWithAGivenLabel(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         v.setTarget(u, 1);
         v.setTarget(x, 1);
@@ -302,9 +302,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveOneOfTheSourcesWithAGivenLabel(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         u.setTarget(v, 1);
         x.setTarget(v, 1);
@@ -318,9 +318,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveNonExistingTargetWithATargetWithSameLabel(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         v.setTarget(x, 1);
         v.setTarget(u, 0);
@@ -333,9 +333,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveNonExistingSourceWithASourceWithSameLabel(){
-        Vertex v = new Vertex("a");
-        Vertex u = new Vertex("b");
-        Vertex x = new Vertex("b");
+        Vertex<String> v = new Vertex<String>("a");
+        Vertex<String> u = new Vertex<String>("b");
+        Vertex<String> x = new Vertex<String>("b");
         
         x.setTarget(v, 1);
         u.setTarget(v, 0);
@@ -348,7 +348,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     
     @Test
     public void testRemoveNonExistingReflexiveEdge(){
-        Vertex v = new Vertex("a");
+        Vertex<String> v = new Vertex<String>("a");
         
         assertEquals(0, v.setTarget(v, 0));
         
