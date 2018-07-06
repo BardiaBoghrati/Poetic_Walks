@@ -33,12 +33,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
     //   immutable parameters or none at all. The rep is never returned either as vertices() returns a fresh defensive copy. The mutable Map
     //   objects returned do not have access to vertices and edges in their rep, as they are newly constructed HashMaps.
     
-    // TODO constructor
     public ConcreteEdgesGraph(){
         checkRep();
     }
     
-    // TODO checkRep
     private void checkRep(){
         assertEdgeVertexCompatibility();
         assertNoDuplicateEdges();
