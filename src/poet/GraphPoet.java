@@ -83,6 +83,24 @@ public class GraphPoet {
         throw new RuntimeException("not implemented");
     }
     
+    /**
+     * A String representing the word affinity graph derive from the corpus as described above. The string has the same format
+     * of weighted graph, which is pair enclose in "(vertices, weighted-edges)". Here vertices represent mathematical set of 
+     * words found in the corpus, as defined above, enclosed in "{}". Weighted-edges represent a mathematical set containing
+     * 3-tuples "(w1, w2, positive-integer)" with positive-integer indicating the number of times the word w1 is followed by w2
+     * in the corpus. The ordering of elements in the sets is unspecified, and all words appear in lower case.
+     * <p>for example from this corpus:
+     * <pre> Hello, HELLO, hello, goodbye!    </pre>
+     * <p>a affinity graph with this string format can be derived:
+     * <pre> "({hello,, goodbye!}, {(hello,, hello,, 2), (hello,, goodbye!, 1)})" </pre>
+     * 
+     */
+    @Override public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString();
+    }
+    
     // TODO toString()
+    
     
 }
