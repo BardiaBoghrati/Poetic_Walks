@@ -36,7 +36,6 @@ public class GraphPoetTest {
     @Test(expected=IOException.class)
     public void testGraphPoetCannotReadFile() throws IOException{
         final File textFile = new File("test/poet/notReadable.txt");
-        textFile.setReadable(false);
         new GraphPoet(textFile);
     };
     
@@ -71,7 +70,7 @@ public class GraphPoetTest {
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("({a}, {(a, a, 1)})", poet.toString());
-        assertEquals("b a", poet.toString());
+        assertEquals("a b", poet.poem("a b"));
     }
     
     @Test
@@ -135,18 +134,18 @@ public class GraphPoetTest {
         final File textFile = new File("test/poet/TwoWordInputTiesForMaximunWeightPath.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
-        assertTrue("({a, b}, {(a, a, 1),(a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, a, 1),(b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(a, a, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(b, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 1),(a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 1),(a, a, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 1),(a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 1),(b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(a, a, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(b, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 1),(a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 1),(a, a, 1), (a, b, 1)})".equals(poet.toString()));
+        assertTrue("({a, b}, {(a, a, 1), (a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, a, 1), (b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (a, a, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (b, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 1), (a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 1), (a, a, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 1), (a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 1), (b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (a, a, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (b, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 1), (a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 1), (a, a, 1), (a, b, 1)})".equals(poet.toString()));
         assertTrue("a a b".equals(poet.poem(" a b")) ||
                 "a b b".equals(poet.poem(" a b")));
     }
@@ -158,18 +157,18 @@ public class GraphPoetTest {
         final File textFile = new File("test/poet/TwoWordInputNoTiesBridgeWordEqualsFirstWord.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
-        assertTrue("({a, b}, {(a, a, 2),(a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, a, 2),(b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(a, a, 2), (b, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(b, b, 1), (a, a, 2)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 1),(a, b, 1), (a, a, 2)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 1),(a, a, 2), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 2),(a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 2),(b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(a, a, 2), (b, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(b, b, 1), (a, a, 2)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 1),(a, b, 1), (a, a, 2)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 1),(a, a, 2), (a, b, 1)})".equals(poet.toString()));
+        assertTrue("({a, b}, {(a, a, 2), (a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, a, 2), (b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (a, a, 2), (b, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (b, b, 1), (a, a, 2)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 1), (a, b, 1), (a, a, 2)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 1), (a, a, 2), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 2), (a, b, 1), (b, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 2), (b, b, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (a, a, 2), (b, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (b, b, 1), (a, a, 2)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 1), (a, b, 1), (a, a, 2)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 1), (a, a, 2), (a, b, 1)})".equals(poet.toString()));
         assertEquals("a a b", poet.poem("\na b"));
     }
     
@@ -180,18 +179,18 @@ public class GraphPoetTest {
         final File textFile = new File("test/poet/TwoWordInputNoTiesBridgeWordEqualsSecondWord.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
-        assertTrue("({a, b}, {(a, a, 1),(a, b, 1), (b, b, 2)})".equals(poet.toString()) ||
-                "({a, b}, {(a, a, 1),(b, b, 2), (a, b, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(a, a, 1), (b, b, 2)})".equals(poet.toString()) ||
-                "({a, b}, {(a, b, 1),(b, b, 2), (a, a, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 2),(a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({a, b}, {(b, b, 2),(a, a, 1), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 1),(a, b, 1), (b, b, 2)})".equals(poet.toString()) ||
-                "({b, a}, {(a, a, 1),(b, b, 2), (a, b, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(a, a, 1), (b, b, 2)})".equals(poet.toString()) ||
-                "({b, a}, {(a, b, 1),(b, b, 2), (a, a, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 2),(a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
-                "({b, a}, {(b, b, 2),(a, a, 1), (a, b, 1)})".equals(poet.toString()));
+        assertTrue("({a, b}, {(a, a, 1), (a, b, 1), (b, b, 2)})".equals(poet.toString()) ||
+                "({a, b}, {(a, a, 1), (b, b, 2), (a, b, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (a, a, 1), (b, b, 2)})".equals(poet.toString()) ||
+                "({a, b}, {(a, b, 1), (b, b, 2), (a, a, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 2), (a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({a, b}, {(b, b, 2), (a, a, 1), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 1), (a, b, 1), (b, b, 2)})".equals(poet.toString()) ||
+                "({b, a}, {(a, a, 1), (b, b, 2), (a, b, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (a, a, 1), (b, b, 2)})".equals(poet.toString()) ||
+                "({b, a}, {(a, b, 1), (b, b, 2), (a, a, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 2), (a, b, 1), (a, a, 1)})".equals(poet.toString()) ||
+                "({b, a}, {(b, b, 2), (a, a, 1), (a, b, 1)})".equals(poet.toString()));
         assertEquals("a b B", poet.poem("a\n\nB"));
         
         
@@ -201,7 +200,7 @@ public class GraphPoetTest {
     public void testRepeatedWordInputOnlyOneLengthTwoPath() throws IOException{
         //Corpus: "a, , A, ,"
         //Input: "a, a,\n"
-        final File textFile = new File("RepeatedWordInputOnlyOneLengthTwoPath.txt");
+        final File textFile = new File("test/poet/RepeatedWordInputOnlyOneLengthTwoPath.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertTrue("({a,, ,}, {(a,, ,, 2), (,, a,, 1)})".equals(poet.toString()) ||
@@ -215,7 +214,7 @@ public class GraphPoetTest {
     public void testRepeatedWordInputWithNoTiesForMaximumWeightPath() throws IOException{
         //Corpus: "a a\n a b\na"
         //Input: "A A"
-        final File textFile = new File("RepeatedWordInputWithNoTiesForMaximumWeightPath.txt");
+        final File textFile = new File("test/poet/RepeatedWordInputWithNoTiesForMaximumWeightPath.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("A a A", poet.poem("A A"));
@@ -224,11 +223,11 @@ public class GraphPoetTest {
     
     @Test
     public void testRepeatedWordInputWithTiesForMaximumPath() throws IOException{
-        //Corpus: ",a ,a b ,a b"
+        //Corpus: ",a ,a b ,a"
         //Input: ",A ,a"
-        final File textFile = new File("RepeatedWordInputWithTiesForMaximumPath.txt");
+        final File textFile = new File("test/poet/RepeatedWordInputWithTiesForMaximumPath.txt");
         GraphPoet poet = new GraphPoet(textFile);
-        
+
         assertTrue(",A ,a ,a".equals(poet.poem(",A ,a")) ||
                 ",A b ,a".equals(poet.poem(",A ,a")));
         
@@ -238,7 +237,7 @@ public class GraphPoetTest {
     public void testReaptedWordInputSingleWordAffinityGraphNoEdges() throws IOException{
         //Corpus: "a"
         //Input: "a a"
-        final File textFile = new File("ReaptedWordInputSingleWordAffinityGraphNoEdges.txt");
+        final File textFile = new File("test/poet/ReaptedWordInputSingleWordAffinityGraphNoEdges.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("({a}, {})", poet.toString());
@@ -249,7 +248,7 @@ public class GraphPoetTest {
     public void testSingleWordInput() throws IOException{
         //Corpus: "a a"
         //Input: "a"
-        final File textFile = new File("SingleWordInput.txt");
+        final File textFile = new File("test/poet/SingleWordInput.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("a", poet.poem("a"));
@@ -259,7 +258,7 @@ public class GraphPoetTest {
     public void testEmptyInput() throws IOException{
         //Corpus: "a a"
         //Input: ""
-        final File textFile = new File("EmptyInput.txt");
+        final File textFile = new File("test/poet/EmptyInput.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("", poet.poem(""));
@@ -269,7 +268,7 @@ public class GraphPoetTest {
     public void testWhiteSpaceInput() throws IOException{
         //Corpus: "a"
         //Input: "  "
-        final File textFile = new File("WhiteSpaceInput.txt");
+        final File textFile = new File("test/poet/WhiteSpaceInput.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("", poet.poem("  "));
@@ -279,7 +278,7 @@ public class GraphPoetTest {
     public void testThreeWordInputBothConsecutivePairsHaveBridgeWord() throws IOException{
         //Corpus: "a b a"
         //Input: "a A a"
-        final File textFile = new File("ThreeWordInputBothConsecutivePairsHaveBridgeWord.txt");
+        final File textFile = new File("test/poet/ThreeWordInputBothConsecutivePairsHaveBridgeWord.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("a b A b a", poet.poem("a A a"));
@@ -289,7 +288,7 @@ public class GraphPoetTest {
     public void testThreeWordInputNoBridgeWords() throws IOException{
         //Corpus: "a a"
         //Input: "a  b a"
-        final File textFile = new File("ThreeWordInputNoBridgeWords.txt");
+        final File textFile = new File("test/poet/ThreeWordInputNoBridgeWords.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("a b a", poet.poem("a  b a"));
@@ -299,7 +298,7 @@ public class GraphPoetTest {
     public void testThreeWordInputFirstConsecutivePairHasBridgeWordSecondDoesnot() throws IOException{
         //Corpus: "a a b"
         //Input: "a b  a"
-        final File textFile = new File("ThreeWordInputFirstConsecutivePairHasBridgeWordSecondDoesno.txt");
+        final File textFile = new File("test/poet/ThreeWordInputFirstConsecutivePairHasBridgeWordSecondDoesnot.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("a a b a", poet.poem("a b  a"));
@@ -309,7 +308,7 @@ public class GraphPoetTest {
     public void testThreeWordInputSecondConsecutivePairHasBridgeWordFirstDoesnot() throws IOException{
         //Corpus: "b b a"
         //Input: "a  b  a"
-        final File textFile = new File("ThreeWordInputSecondConsecutivePairHasBridgeWordFirstDoesnot.txt");
+        final File textFile = new File("test/poet/ThreeWordInputSecondConsecutivePairHasBridgeWordFirstDoesnot.txt");
         GraphPoet poet = new GraphPoet(textFile);
         
         assertEquals("a b b a", poet.poem("a  b  a"));

@@ -5,6 +5,13 @@ package poet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.Set;
+
 
 import graph.Graph;
 
@@ -55,11 +62,15 @@ public class GraphPoet {
     private final Graph<String> graph = Graph.empty();
     
     // Abstraction function:
-    //   TODO
+    //   this.graph represents its self
     // Representation invariant:
-    //   TODO
+    //   All vertex labels must be lower case, non-empty, and contain no white space.
+    //   graph is weakly connected and there is a path
+    //   traversing each edge e of the graph exactly weight(e) times.
     // Safety from rep exposure:
-    //   TODO
+    //   The graph is a private field, and return values and method parameters are immutable strings, except for the constructor.
+    //   The constructor takes in a file object is used to read from a file and create the rep, and after constructor returns there is
+    //   no way for it to access or modify the rep through this file object.
     
     /**
      * Create a new poet with the graph from corpus (as described above).
@@ -68,10 +79,29 @@ public class GraphPoet {
      * @throws IOException if the corpus file cannot be found or read
      */
     public GraphPoet(File corpus) throws IOException {
-        throw new RuntimeException("not implemented");
+        final Scanner sc = new Scanner(corpus);
+        String current;
+        String prev;
+        
+        if(!sc.hasNext()){
+            sc.close();
+            return;
+        }
+        
+        current = sc.next().toLowerCase();
+        graph.add(current);
+        
+        while(sc.hasNext()){
+            prev = current;
+            current = sc.next().toLowerCase();
+            int previousEdgeWeight = graph.targets(prev).getOrDefault(current, 0);
+            
+            graph.set(prev, current, previousEdgeWeight + 1);
+        }
+        
+        sc.close();
+        checkRep();
     }
-    
-    // TODO checkRep
     
     /**
      * Generate a poem.
@@ -80,7 +110,23 @@ public class GraphPoet {
      * @return poem (as described above)
      */
     public String poem(String input) {
-        throw new RuntimeException("not implemented");
+        final String[] words = input.trim().split("\\s+");
+        final StringBuilder poemBuilder = new StringBuilder();
+        
+        if(words.length > 0) poemBuilder.append(words[0]);
+        
+        for(int i = 0; i+1 < words.length; i++){
+            String bridgeWord = getMaximalBridgeWord(words[i].toLowerCase(), words[i+1].toLowerCase());
+            if(!bridgeWord.isEmpty()){
+                poemBuilder.append(" " + bridgeWord);
+            }
+            poemBuilder.append(" " + words[i+1]);
+        }
+        
+        final String poem = poemBuilder.toString();
+        checkRep();
+        
+        return poem;
     }
     
     /**
@@ -96,11 +142,111 @@ public class GraphPoet {
      * 
      */
     @Override public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+        return graph.toString();
     }
     
-    // TODO toString()
+    private void checkRep(){
+        assert allVertexLabelsAreNonEmptyNonWhitesSpaceLowerCaseStrings();
+        assert isWeaklyConnected();
+        assert hasWeightedEulerianPath();
+    };
     
+    private boolean allVertexLabelsAreNonEmptyNonWhitesSpaceLowerCaseStrings(){
+        for(String vertex : graph.vertices()){
+            if(vertex.isEmpty()) return false;
+            if(vertex.length() > vertex.replaceAll("\\s+", "").length()) return false; //contains white space
+            if(!vertex.equals(vertex.toLowerCase())) return false; //its not lower case
+        }
+        return true;
+    }
     
+    //Requires: this.graph must be weakly connected
+    //Effects: returns true iff. there is a path in this.graph for which
+    //         every edge e is traversed exactly weight(e) times.
+    private boolean hasWeightedEulerianPath(){
+        int numberOfVerticesWithPlusOneNetFlow = 0;
+        int numberOfVerticesWithNegativeOneNetFlow = 0;
+        int numberofVerticesWithZeroNetFlow = 0;
+        
+        for(String vertex : graph.vertices()){
+            int netFlow = sumIntCollection(graph.sources(vertex).values()) - 
+                    sumIntCollection(graph.targets(vertex).values());
+            if(netFlow == 1){
+                numberOfVerticesWithPlusOneNetFlow++;
+            }else if(netFlow == 0){
+                numberofVerticesWithZeroNetFlow++;
+            }else if(netFlow == -1){
+                numberOfVerticesWithNegativeOneNetFlow++;
+            }            
+        }
+        
+        //Check equivalent condition for Eulerian path of weakly connected graph.
+        return numberOfVerticesWithPlusOneNetFlow <= 1 &&
+                numberOfVerticesWithNegativeOneNetFlow <= 1 &&
+                numberOfVerticesWithPlusOneNetFlow + numberOfVerticesWithNegativeOneNetFlow + numberofVerticesWithZeroNetFlow ==
+                graph.vertices().size(); 
+        
+    }
+    
+    //Effects: returns sum of all integers found in c, if c not empty;
+    //         else, returns zero.
+    private static int sumIntCollection(Collection<Integer> c){
+        int sum = 0;
+        for(Integer i : c ){
+            sum += i;
+        }
+        return sum;
+    }
+    
+    //Effects: returns true iff. this.graph is weakly connected.
+    private boolean isWeaklyConnected(){
+        final Set<String> unvisitedVertices = this.graph.vertices();
+        final Queue<String> queque = new ArrayDeque<>();
+        
+        if(unvisitedVertices.isEmpty()) return true;
+        
+        String source = unvisitedVertices.iterator().next(); //get any vertex in this.graph
+        unvisitedVertices.remove(source);
+        queque.add(source);
+        
+        while(!queque.isEmpty()){
+            String src = queque.remove();
+            Set<String> adjVertices = new HashSet<>();
+            adjVertices.addAll(graph.sources(src).keySet());
+            adjVertices.addAll(graph.targets(src).keySet());
+            
+            for(String adjVertex : adjVertices){
+                if(unvisitedVertices.contains(adjVertex)){
+                    queque.add(adjVertex);
+                    unvisitedVertices.remove(adjVertex);
+                }
+            }
+        }
+        
+        return unvisitedVertices.isEmpty();
+    }
+    
+    //Requires: w1 and w2 to be non empty lower case
+    //Effects: returns bridge word connecting w1 to w2 in this.graph as defined in the spec, if there is any; else, 
+    //         returns empty string
+    private String getMaximalBridgeWord(String w1, String w2){
+        String bridgeWord = "";
+        int maxPathWeight = 0;
+        
+        Set<String> bridges = new HashSet<>(graph.targets(w1).keySet());
+        bridges.retainAll(graph.sources(w2).keySet());
+
+        for(String b : bridges){
+            final int pathWeight = 
+                    graph.sources(b).get(w1) + graph.targets(b).get(w2);
+            
+            if(pathWeight > maxPathWeight){
+                bridgeWord = b;
+                maxPathWeight = pathWeight;
+            }
+            
+        }
+        
+        return bridgeWord;
+    }
 }
