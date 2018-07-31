@@ -32,12 +32,6 @@ public class GraphPoetTest {
         final File textFile = new File("test/poet/doesNotExists.txt");
         new GraphPoet(textFile);
     };
-
-    @Test(expected=IOException.class)
-    public void testGraphPoetCannotReadFile() throws IOException{
-        final File textFile = new File("test/poet/notReadable.txt");
-        new GraphPoet(textFile);
-    };
     
     @Test
     public void testGraphPoetNoTextInCorpus() throws IOException{
