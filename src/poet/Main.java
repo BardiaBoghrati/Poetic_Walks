@@ -7,9 +7,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Example program using GraphPoet.
@@ -29,17 +26,24 @@ public class Main {
         
         System.out.println("please enter pathname for corpus text file:");
         final String corpusFileName = cin.readLine();
+        System.out.println("loading corpus file...");
         final GraphPoet nimoy = new GraphPoet(new File(corpusFileName));
         
-        System.out.println("please enter pathname for input text file:");
-        final String inputFileName = cin.readLine();
-        List<String> inputs = Files.readAllLines(new File(inputFileName).toPath());
-        
-        List<String> outputs = new ArrayList<>();
-        for(String input : inputs){
-            outputs.add(nimoy.poem(input));
-        }
-        System.out.println("\n" + String.join("\n", inputs) + "\n>>>\n" + String.join(" ", outputs));
+        outer:
+            while(true){
+                System.out.println("please enter input text:");
+                final String input = cin.readLine();
+                System.out.println("\n" + input + "\n>>>\n" + nimoy.poem(input));
+                System.out.println("\nwould you like to continue?(y|n)");
+                while(true){
+                    String answer = cin.readLine();
+                    
+                    if(answer.equals("y")) break;
+                    if(answer.equals("n")) break outer;
+                    
+                    System.err.println(answer + " is invalid answer.");
+                    System.out.println("Please answer y for \"Yes\" or n for \"No\":");
+                }
+            }
     }
-    
 }
